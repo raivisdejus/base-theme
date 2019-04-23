@@ -11,6 +11,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import TextPlaceholder from 'Component/TextPlaceholder';
 import './Select.style';
 
 /**
@@ -18,15 +19,41 @@ import './Select.style';
  * @class Select
  */
 class Select extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            selectValue: ''
+        };
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        const { selectValue } = state;
+        const { selectedOption, options } = props;
+        const tempData = [];
+        const selectedFilter = options.reduce((selectedFilter, option) => {
+            if (option && option.id === selectedOption) {
+                tempData.push(option.id);
+            }
+
+            return tempData;
+        }, 0);
+
+        if (!selectValue) return { selectValue: selectedFilter[0] };
+
+        return null;
+    }
+
     /**
      * Handle Sort key change
      * @param {Object} option
      * @return {void}
      */
-    onGetSortKey(key) {
-        const { onGetSortKey } = this.props;
+    onGetKey(key) {
+        const { onGetKey } = this.props;
 
-        onGetSortKey(key);
+        this.setState({ selectValue: key });
+        onGetKey(key);
     }
 
     /**
@@ -34,13 +61,12 @@ class Select extends Component {
      * @param {Object} option
      */
     renderSortOption(option) {
-        // TODO add onkeypress for options
         return (
                 <option
                   block="Select"
                   elem="Option"
-                  key={ option.value }
-                  value={ option.value }
+                  key={ option.id }
+                  value={ option.id }
                 >
                 { option.label }
                 </option>
@@ -48,11 +74,11 @@ class Select extends Component {
     }
 
     render() {
-        // TODO add select as possible child type name in form component
-        const { options, selectedOption, formRef } = this.props;
+        const { options, reference, id } = this.props;
+        const { selectValue } = this.state;
         const tempData = [];
         const selectedFilter = options.reduce((selectedFilter, option) => {
-            if (option && option.value === selectedOption) {
+            if (option && option.id === selectValue) {
                 tempData.push(option.label);
             }
 
@@ -60,21 +86,24 @@ class Select extends Component {
         }, 0);
 
         const listItems = options.map(option => (
-            <li
-              key={ option.value }
-              onClick={ () => this.onGetSortKey(option.value) }
-              tabIndex={ 0 }
-              onKeyPress={ () => this.onGetSortKey(option.value) }
-            >
-            {option.label}
-            </li>
+            option.label
+            && (
+                <li
+                  key={ option.id }
+                  onClick={ () => this.onGetKey(option.id) }
+                  tabIndex={ 0 }
+                  onKeyPress={ () => this.onGetKey(option.id) }
+                >
+                {option.label}
+                </li>
+            )
         ));
 
         return (
             <div block="Select" elem="Container">
                 <div block="Select" elem="Wrapper" tabIndex="0">
                     <div block="Select" elem="Current">
-                        <span>{ selectedFilter }</span>
+                        <span>{ selectedFilter || <TextPlaceholder length="short" /> }</span>
                         <div block="Select" elem="Arrow" />
                     </div>
                     <ul
@@ -86,12 +115,13 @@ class Select extends Component {
                 <select
                   block="Select"
                   elem="Original"
-                  ref={ formRef }
-                  value={ selectedOption }
+                  ref={ reference }
+                  id={ id }
+                  value={ selectValue }
                   readOnly
-                  onChange={ e => this.onGetSortKey(e.target.value) }
+                  onChange={ e => this.onGetKey(e.target.value) }
                 >
-                { options && options.map(option => this.renderSortOption(option)) }
+                { options && options.map(option => option.label && this.renderSortOption(option)) }
                 </select>
             </div>
         );
@@ -99,18 +129,19 @@ class Select extends Component {
 }
 
 Select.propTypes = {
-    onGetSortKey: PropTypes.func.isRequired,
-    selectedOption: PropTypes.string.isRequired,
+    onGetKey: PropTypes.func.isRequired,
     options: PropTypes.arrayOf(
         PropTypes.shape({
             value: PropTypes.string,
             label: PropTypes.string
         })
     ).isRequired,
-    formRef: PropTypes.oneOfType([
-        PropTypes.func, 
+    id: PropTypes.string.isRequired,
+    reference: PropTypes.oneOfType([
+        PropTypes.bool,
+        PropTypes.func,
         PropTypes.shape({ current: PropTypes.instanceOf(Element) })
-    ])
+    ]).isRequired
 };
 
 export default Select;

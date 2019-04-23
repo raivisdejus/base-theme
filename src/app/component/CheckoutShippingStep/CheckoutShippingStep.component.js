@@ -20,6 +20,7 @@ const STATE_FIELD_ID = 'region_id';
 const ZIP_FIELD_ID = 'postcode';
 const PHONE_FIELD_ID = 'telephone';
 const COUNTRY_FIELD_ID = 'country_id';
+const DEFAULT_COUNTRY = 'US';
 
 class CheckoutShippingStep extends Component {
     constructor(props) {
@@ -36,7 +37,7 @@ class CheckoutShippingStep extends Component {
             city: '',
             region_id: '',
             postcode: '',
-            country_id: '',
+            country_id: DEFAULT_COUNTRY,
             telephone: '',
             shippingMethods: [],
             activeShippingMethod: {},
@@ -70,7 +71,7 @@ class CheckoutShippingStep extends Component {
             [CITY_FIELD_ID]: { label: 'City' },
             [STATE_FIELD_ID]: { label: 'State', validation: [] },
             [ZIP_FIELD_ID]: { label: 'Postal Code' },
-            [COUNTRY_FIELD_ID]: { label: 'Country' },
+            [COUNTRY_FIELD_ID]: { label: 'Country', type: 'select' },
             [PHONE_FIELD_ID]: { label: 'Phone Number' }
         };
     }
@@ -144,6 +145,7 @@ class CheckoutShippingStep extends Component {
 
     renderField(id, overrideStateValue) {
         const { [id]: stateValue } = this.state;
+        const { countryList } = this.props;
         const {
             type = 'text',
             label,
@@ -158,6 +160,7 @@ class CheckoutShippingStep extends Component {
               type={ type }
               label={ label }
               note={ note }
+              selectOptions={ id === 'country_id' ? countryList : null }
               value={ overrideStateValue || stateValue }
               validation={ validation }
               onChange={ onChange }
@@ -215,7 +218,8 @@ class CheckoutShippingStep extends Component {
 CheckoutShippingStep.propTypes = {
     estimateShippingCost: PropTypes.func.isRequired,
     saveAddressInformation: PropTypes.func.isRequired,
-    showNotification: PropTypes.func.isRequired
+    showNotification: PropTypes.func.isRequired,
+    countryList: PropTypes.arrayOf(PropTypes.shape).isRequired
 };
 
 export default CheckoutShippingStep;

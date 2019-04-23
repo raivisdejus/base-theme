@@ -57,6 +57,10 @@ const mapDispatchToProps = dispatch => ({
 
     updateInitialCartData: () => {
         CartDispatcher.updateInitialCartData(dispatch);
+    },
+
+    getCountriesList: () => {
+        HeaderAndFooterDispatcher.getCountriesList(dispatch);
     }
 });
 

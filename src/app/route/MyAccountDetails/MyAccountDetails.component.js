@@ -21,6 +21,7 @@ const STATE_ACCOUNT_OVERVIEW = 'accountOverview';
 const STATE_EDIT_INFORMATION = 'editInformation';
 const STATE_EDIT_PASSWORD = 'editPassword';
 const STATE_UPDATE_ADDRESS = 'updateAddress';
+const DEFAULT_COUNTRY = 'US';
 
 class MyAccountDetails extends Component {
     constructor(props) {
@@ -29,7 +30,8 @@ class MyAccountDetails extends Component {
         this.state = {
             state: STATE_ACCOUNT_OVERVIEW,
             correctAddress: {},
-            isLoading: false
+            isLoading: false,
+            selectValue: ''
         };
 
         this.renderMap = {
@@ -180,7 +182,7 @@ class MyAccountDetails extends Component {
      * @param {Object} correctAddress
      */
     changeState(state, correctAddress) {
-        this.setState({ state, correctAddress });
+        this.setState({ state, correctAddress, selectValue: '' });
     }
 
     /**
@@ -212,6 +214,14 @@ class MyAccountDetails extends Component {
     }
 
     /**
+     * Save country select state
+     * @param {String} value
+     */
+    changeSelectValue(value) {
+        this.setState({ selectValue: value });
+    }
+
+    /**
      * Render main account overview page
      */
     renderAccountOverview() {
@@ -228,7 +238,8 @@ class MyAccountDetails extends Component {
      * Render Customer Address Update page
      */
     renderUpdateAddress() {
-        const { correctAddress } = this.state;
+        const { correctAddress, selectValue } = this.state;
+        const { countryList } = this.props;
         const {
             firstname,
             lastname,
@@ -299,11 +310,11 @@ class MyAccountDetails extends Component {
                           value={ region && region.region }
                         />
                         <Field
-                          type="text"
+                          type="select"
                           label="Country"
                           id="country_id"
-                          validation={ ['notEmpty'] }
-                          value={ country_id }
+                          selectOptions={ countryList }
+                          value={ selectValue || country_id || DEFAULT_COUNTRY }
                         />
                     </fieldset>
                     <button block="MyAccountDetails" elem="Submit" type="submit">Add Address</button>
@@ -411,7 +422,7 @@ class MyAccountDetails extends Component {
             email,
             is_subscribed,
             id
-        } = customer;
+        } = customer || {};
         const fullName = (firstname && lastname) ? `${firstname} ${lastname}` : <TextPlaceholder length="medium" />;
         const showNewsletter = id
             ? `Subscribed to newsletter: ${is_subscribed ? ' Yes' : ' No'}`
@@ -497,9 +508,10 @@ class MyAccountDetails extends Component {
      * @param {String} addressType
      */
     renderAddress(addressType) {
-        const { customer, customer: { addresses } } = this.props;
+        const { customer } = this.props;
+        const { addresses } = customer || {};
 
-        if (!Object.keys(customer).length) {
+        if (customer && !Object.keys(customer).length) {
             return this.renderAddressFields();
         }
 
@@ -599,7 +611,8 @@ MyAccountDetails.propTypes = {
     updateCustomerAddress: PropTypes.func.isRequired,
     changeCustomerPassword: PropTypes.func.isRequired,
     updateBreadcrumbs: PropTypes.func.isRequired,
-    isSignedIn: PropTypes.bool.isRequired
+    isSignedIn: PropTypes.bool.isRequired,
+    countryList: PropTypes.arrayOf(PropTypes.shape).isRequired
 };
 
 export default MyAccountDetails;

@@ -106,7 +106,8 @@ export class AppRouter extends Component {
     componentWillMount() {
         const {
             updateHeaderAndFooter,
-            updateInitialCartData
+            updateInitialCartData,
+            getCountriesList
         } = this.props;
         const {
             beforeItems,
@@ -138,6 +139,7 @@ export class AppRouter extends Component {
 
         updateHeaderAndFooter({ menu: { menuId: 1 }, footer: footerOptions });
         updateInitialCartData();
+        getCountriesList();
     }
 
     /**
@@ -224,7 +226,8 @@ export class AppRouter extends Component {
 
 AppRouter.propTypes = {
     updateHeaderAndFooter: PropTypes.func.isRequired,
-    updateInitialCartData: PropTypes.func.isRequired
+    updateInitialCartData: PropTypes.func.isRequired,
+    getCountriesList: PropTypes.func.isRequired
 };
 
 const mapDispatchToProps = dispatch => ({
@@ -234,6 +237,10 @@ const mapDispatchToProps = dispatch => ({
 
     updateInitialCartData: () => {
         CartDispatcher.updateInitialCartData(dispatch);
+    },
+
+    getCountriesList: () => {
+        HeaderAndFooterDispatcher.getCountriesList(dispatch);
     }
 });
 
