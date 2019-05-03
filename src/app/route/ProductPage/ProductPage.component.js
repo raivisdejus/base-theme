@@ -20,6 +20,8 @@ import Meta from 'Component/Meta';
 import { ProductType } from 'Type/ProductList';
 import { getUrlParam, getQueryParam, updateQueryParamWithoutHistory } from 'Util/Url';
 import './ProductPage.style';
+import RelatedProducts from 'Component/RelatedProducts';
+import ProductInformation from 'Component/ProductInformation';
 
 class ProductPage extends Component {
     constructor() {
@@ -234,6 +236,11 @@ class ProductPage extends Component {
                           areDetailsLoaded={ areDetailsLoaded }
                           configurableVariantIndex={ configurableVariantIndex }
                           updateConfigurableVariantIndex={ this.updateUrl }
+                        />
+                        <ProductInformation product={ dataSource } type="block" />
+                        <RelatedProducts
+                          product={ dataSource }
+                          areDetailsLoaded={ areDetailsLoaded }
                         />
                     </ContentWrapper>
                 </main>
