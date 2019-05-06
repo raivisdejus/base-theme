@@ -2,8 +2,8 @@
     text-decoration: none; // because we never need underlines in buttons
 
     border-radius: 0;
-    font-size: 1.1rem;
     font-weight: 700;
+    font-size: 1.1rem;
     text-transform: uppercase;
     padding: var(--button-padding);
     color: var(--button-color);
@@ -20,6 +20,8 @@
 
     &:hover,
     &:focus {
+        text-decoration: none;
+
         @include after-mobile {
             border-color: var(--button-hover-border);
             background-color: var(--button-hover-background);
@@ -59,6 +61,8 @@
         margin: 0;
         padding: 0;
         font-weight: normal;
+        text-align: left;
+        font-size: 0.95rem;
 
         &:hover,
         &:focus {
