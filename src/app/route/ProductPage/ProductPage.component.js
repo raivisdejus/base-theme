@@ -241,6 +241,7 @@ class ProductPage extends Component {
                         <RelatedProducts
                           product={ dataSource }
                           areDetailsLoaded={ areDetailsLoaded }
+                          label="ScandiPWA recommends"
                         />
                     </ContentWrapper>
                 </main>
