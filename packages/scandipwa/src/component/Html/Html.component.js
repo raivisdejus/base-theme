@@ -202,7 +202,13 @@ export class Html extends PureComponent {
 
     replaceStyle(elem) {
         const { children } = elem;
-        const elemHash = hash(elem);
+
+        if (!children || !children[0]) {
+            // eslint-disable-next-line react/jsx-no-useless-fragment
+            return <></>;
+        }
+
+        const elemHash = hash(children[0].data);
 
         if (this.createdOutsideElements[elemHash]) {
             return <></>;
@@ -210,10 +216,7 @@ export class Html extends PureComponent {
 
         const style = document.createElement('style');
 
-        if (children && children[0]) {
-            style.appendChild(document.createTextNode(children[0].data));
-        }
-
+        style.appendChild(document.createTextNode(children[0].data));
         document.head.appendChild(style);
         this.createdOutsideElements[elemHash] = true;
 
