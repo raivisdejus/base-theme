@@ -9,5 +9,7 @@
  * @link https://github.com/scandipwa/base-theme
  */
 
-export * from './Cart';
-export * from './Token';
+// eslint-disable-next-line import/prefer-default-export
+export const PRODUCT_INFORMATION = 'information';
+export const PRODUCT_ATTRIBUTES = 'attributes';
+export const PRODUCT_REVIEWS = 'reviews';
